@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki — Cyberpunk Discord Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a14;
+      --bg2:       #0f0f1e;
+      --bg3:       #141428;
+      --card:      #111124;
+      --pink:      #ec4899;
+      --cyan:      #00f5ff;
+      --violet:    #7c3aed;
+      --green:     #39ff14;
+      --text:      #c8c8e8;
+      --text-dim:  #5a5a8a;
+      --border:    rgba(236,72,153,0.18);
+      --glow-pink: 0 0 18px rgba(236,72,153,0.55);
+      --glow-cyan: 0 0 18px rgba(0,245,255,0.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCANLINES overlay ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 3px; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(10,10,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--pink);
+      text-shadow: var(--glow-pink);
+      letter-spacing: 0.12em;
+    }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); text-shadow: var(--glow-cyan); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridScroll 18s linear infinite;
+    }
+    @keyframes gridScroll { from { background-position: 0 0; } to { background-position: 0 48px; } }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      color: var(--cyan);
+      text-shadow: var(--glow-cyan);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      position: relative;
+    }
+    .eyebrow::before { content: '> '; color: var(--pink); }
+
+    .hero h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+      position: relative;
+      margin-bottom: 1.4rem;
+    }
+    .glitch {
+      color: #fff;
+      position: relative;
+      display: inline-block;
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0; width: 100%;
+      overflow: hidden;
+    }
+    .glitch::before {
+      color: var(--cyan);
+      animation: glitch1 3.5s infinite;
+      clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+    }
+    .glitch::after {
+      color: var(--pink);
+      animation: glitch2 3.5s infinite;
+      clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    }
+    @keyframes glitch1 {
+      0%,90%,100% { transform: translate(0); opacity: 0; }
+      92% { transform: translate(-3px, 1px); opacity: 1; }
+      95% { transform: translate(3px, -1px); opacity: 1; }
+      97% { transform: translate(0); opacity: 0; }
+    }
+    @keyframes glitch2 {
+      0%,90%,100% { transform: translate(0); opacity: 0; }
+      93% { transform: translate(3px, 2px); opacity: 1; }
+      96% { transform: translate(-2px, -1px); opacity: 1; }
+      98% { transform: translate(0); opacity: 0; }
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      max-width: 540px;
+      margin-bottom: 2.4rem;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(236,72,153,0.1);
+      border: 1px solid rgba(236,72,153,0.3);
+      border-radius: 999px;
+      padding: 0.45rem 1.2rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--pink);
+      margin-bottom: 2.8rem;
+      position: relative;
+    }
+    .dot-live {
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; position: relative; }
+    .btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 1.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--pink);
+      color: #fff;
+      box-shadow: var(--glow-pink);
+    }
+    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid rgba(0,245,255,0.4);
+    }
+    .btn-ghost:hover { background: rgba(0,245,255,0.08); box-shadow: var(--glow-cyan); transform: translateY(-2px); }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 5rem 2rem; max-width: 960px; margin: 0 auto; }
+    section + section { padding-top: 2rem; }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.28em;
+      color: var(--violet);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .section-label::before { content: '// '; }
+
+    h2 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    h2 span { color: var(--pink); }
+
+    .section-intro {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin-bottom: 3rem;
+    }
+
+    /* ─── PIPELINE STEPS ─── */
+    .pipeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .pipeline::before {
+      content: '';
+      position: absolute;
+      left: 27px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--pink), var(--violet), var(--cyan));
+      opacity: 0.25;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 0 1.4rem;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 1rem 1rem 1rem 0;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .step:hover { background: rgba(255,255,255,0.02); }
+    .step.active { background: rgba(236,72,153,0.05); }
+
+    .step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: var(--card);
+      flex-shrink: 0;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+    .step.active .step-num, .step:hover .step-num {
+      border-color: var(--pink);
+      color: var(--pink);
+      box-shadow: var(--glow-pink);
+    }
+
+    .step-body { padding-top: 0.9rem; }
+    .step-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.3rem;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .step-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      background: rgba(124,58,237,0.2);
+      color: var(--violet);
+      border: 1px solid rgba(124,58,237,0.3);
+      letter-spacing: 0.05em;
+    }
+    .step-desc { color: var(--text-dim); font-size: 0.95rem; }
+
+    .step-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s;
+      opacity: 0;
+    }
+    .step.active .step-detail { max-height: 300px; opacity: 1; }
+
+    .step-detail-inner {
+      margin-top: 0.8rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg3);
+      border-left: 3px solid var(--pink);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .step-detail-inner code {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--cyan);
+      background: rgba(0,245,255,0.07);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    /* ─── CONCEPTS GRID ─── */
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+    .concept-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem 1.4rem 1.2rem;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .concept-card:hover {
+      border-color: rgba(236,72,153,0.5);
+      box-shadow: var(--glow-pink);
+      transform: translateY(-3px);
+    }
+    .concept-icon { font-size: 1.6rem; margin-bottom: 0.7rem; }
+    .concept-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--pink);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+    .concept-desc { font-size: 0.9rem; color: var(--text-dim); }
+
+    /* ─── SECURITY ─── */
+    .security-list { display: flex; flex-direction: column; gap: 1rem; }
+    .security-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.1rem 1.3rem;
+      background: var(--card);
+      border: 1px solid rgba(57,255,20,0.12);
+      border-radius: 8px;
+    }
+    .security-item .icon { font-size: 1.3rem; flex-shrink: 0; }
+    .security-item strong { font-weight: 700; color: var(--green); font-family: 'Orbitron', monospace; font-size: 0.8rem; display: block; margin-bottom: 0.2rem; letter-spacing: 0.06em; }
+    .security-item p { font-size: 0.9rem; color: var(--text-dim); }
+
+    /* ─── TERMINAL CTA ─── */
+    .terminal-block {
+      background: #080810;
+      border: 1px solid rgba(0,245,255,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--glow-cyan);
+    }
+    .terminal-bar {
+      background: var(--bg3);
+      padding: 0.6rem 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid rgba(0,245,255,0.1);
+    }
+    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-bar span { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-dim); margin-left: 0.5rem; }
+    .terminal-body { padding: 1.4rem 1.6rem; }
+    .terminal-body p {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.88rem;
+      line-height: 2;
+      color: var(--text);
+    }
+    .t-prompt { color: var(--pink); }
+    .t-cmd { color: var(--cyan); }
+    .t-out { color: var(--green); }
+    .t-dim { color: var(--text-dim); }
+    .t-url {
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,245,255,0.3);
+      transition: color 0.2s;
+    }
+    .t-url:hover { color: #fff; }
+    .copy-url {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(0,245,255,0.1);
+      border: 1px solid rgba(0,245,255,0.3);
+      border-radius: 4px;
+      padding: 0.2rem 0.7rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      cursor: pointer;
+      margin-left: 0.8rem;
+      transition: all 0.2s;
+      vertical-align: middle;
+    }
+    .copy-url:hover { background: rgba(0,245,255,0.2); }
+    .copy-url.copied { color: var(--green); border-color: var(--green); background: rgba(57,255,20,0.1); }
+
+    /* ─── DIVIDER ─── */
+    .neon-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--pink), var(--violet), transparent);
+      opacity: 0.3;
+      margin: 0 2rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem 2.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--pink); text-decoration: none; }
+    footer a:hover { text-shadow: var(--glow-pink); }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── MODE TOGGLE ─── */
+    .mode-toggle {
+      display: flex; align-items: center; gap: 0.55rem;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.35);
+      border-radius: 999px;
+      padding: 0.32rem 0.9rem 0.32rem 0.55rem;
+      cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--violet);
+      transition: all 0.25s;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .mode-toggle:hover {
+      background: rgba(124,58,237,0.22);
+      border-color: var(--violet);
+      box-shadow: 0 0 14px rgba(124,58,237,0.4);
+    }
+    .mode-toggle .toggle-track {
+      width: 30px; height: 16px;
+      background: rgba(124,58,237,0.25);
+      border-radius: 999px;
+      position: relative;
+      transition: background 0.25s;
+      flex-shrink: 0;
+    }
+    .mode-toggle .toggle-thumb {
+      width: 12px; height: 12px;
+      background: var(--violet);
+      border-radius: 50%;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: transform 0.25s, background 0.25s;
+      box-shadow: 0 0 6px rgba(124,58,237,0.7);
+    }
+    body.easy-mode .mode-toggle {
+      background: rgba(57,255,20,0.1);
+      border-color: rgba(57,255,20,0.4);
+      color: var(--green);
+    }
+    body.easy-mode .mode-toggle .toggle-track { background: rgba(57,255,20,0.2); }
+    body.easy-mode .mode-toggle .toggle-thumb {
+      transform: translateX(14px);
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(57,255,20,0.8);
+    }
+    body.easy-mode .mode-toggle:hover {
+      box-shadow: 0 0 14px rgba(57,255,20,0.35);
+    }
+
+    /* toast */
+    .mode-toast {
+      position: fixed; bottom: 1.6rem; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--card);
+      border: 1px solid var(--violet);
+      border-radius: 8px;
+      padding: 0.7rem 1.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82rem;
+      color: #fff;
+      z-index: 9998;
+      transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 0 24px rgba(124,58,237,0.4);
+    }
+    .mode-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* easy-mode text swap */
+    .txt-dev { display: inline; }
+    .txt-easy { display: none; }
+    body.easy-mode .txt-dev { display: none; }
+    body.easy-mode .txt-easy { display: inline; }
+
+    /* easy mode highlights tech terms */
+    body.easy-mode code {
+      background: rgba(57,255,20,0.08);
+      color: var(--green);
+      border: 1px solid rgba(57,255,20,0.2);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .pipeline::before { left: 23px; }
+      .step { grid-template-columns: 48px 1fr; }
+      .step-num { width: 48px; height: 48px; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">◈ CDG_WIKI</div>
+    <ul class="nav-links">
+      <li><a href="#fonctionnement">Pipeline</a></li>
+      <li><a href="#concepts">Concepts</a></li>
+      <li><a href="#securite">Sécurité</a></li>
+      <li><a href="#acces">Accès</a></li>
+    </ul>
+    <button class="mode-toggle" onclick="toggleMode()" title="Basculer entre mode technique et mode simplifié">
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span class="txt-dev">⚙️ Mode dev</span>
+      <span class="txt-easy">🧠 Mode simple</span>
+    </button>
+  </nav>
+  <div class="mode-toast" id="modeToast"></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow"></div>
+
+    <p class="eyebrow">Documentation officielle — v1.0</p>
+    <h1>
+      <span class="glitch" data-text="Cyberpunk Discord">Cyberpunk Discord</span><br>
+      <span style="color: var(--pink);">Gallery</span>
+    </h1>
+    <p class="hero-sub">
+      <span class="txt-dev">Une galerie web automatique synchronisée en temps réel avec un salon Discord privé — zéro intervention manuelle.</span>
+      <span class="txt-easy">Un album photo en ligne qui se remplit tout seul dès que tu postes une image sur Discord. Tu n'as rien à faire de plus.</span>
+    </p>
+    <div class="hero-badge">
+      <span class="dot-live"></span>
+      Synchronisation active · toutes les heures
+    </div>
+    <div class="cta-group">
+      <a href="#fonctionnement" class="btn btn-primary">Voir le pipeline</a>
+      <a href="https://Nathan-Pro-FR.github.io/Discord_Github_Action/" target="_blank" rel="noopener" class="btn btn-ghost">Ouvrir la galerie ↗</a>
+    </div>
+  </div>
+
+  <div class="neon-divider"></div>
+
+  <!-- FONCTIONNEMENT -->
+  <section id="fonctionnement">
+    <p class="section-label reveal">Pipeline</p>
+    <h2 class="reveal">Fonctionnement <span>de A à Z</span></h2>
+    <p class="section-intro reveal">
+      <span class="txt-dev">Chaque média posté dans le salon Discord parcourt ce pipeline automatiquement. Clique sur chaque étape pour voir les détails techniques.</span>
+      <span class="txt-easy">Voici le chemin que prend ta photo entre le moment où tu l'envoies sur Discord et le moment où elle apparaît sur le site. Clique sur chaque étape pour en savoir plus.</span>
+    </p>
+
+    <div class="pipeline">
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Tu postes un média <span class="step-tag">DISCORD</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Tu envoies une image, gif ou vidéo dans le salon désigné. C'est la seule action humaine requise.</span>
+            <span class="txt-easy">Tu envoies une photo ou une vidéo dans le bon salon Discord, comme tu le ferais normalement. C'est tout ce que tu as à faire.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Formats supportés : <code>.jpg</code> <code>.png</code> <code>.gif</code> <code>.webp</code> <code>.mp4</code> <code>.mov</code> <code>.webm</code> <code>.mkv</code> et plus. La détection se fait par MIME type ou extension d'URL.</span>
+              <span class="txt-easy">Tous les formats courants marchent : photos, GIFs animés, vidéos… Le système reconnaît automatiquement le type de fichier, tu n'as rien à préciser.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">GitHub Actions se déclenche <span class="step-tag">AUTOMATION</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Toutes les heures, un workflow s'exécute automatiquement sur les serveurs GitHub. Il peut aussi être lancé manuellement.</span>
+            <span class="txt-easy">Toutes les heures, un petit robot hébergé par GitHub se réveille tout seul et commence à travailler. On peut aussi le réveiller à la demande.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Déclencheur : <code>cron: "0 * * * *"</code> (chaque heure pile) + <code>workflow_dispatch</code> pour un lancement manuel depuis l'onglet Actions de GitHub.</span>
+              <span class="txt-easy">C'est comme un réveil programmé toutes les heures. Si on ne veut pas attendre, il y a aussi un bouton "lancer maintenant" sur le site GitHub du projet.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Scan de l'historique Discord <span class="step-tag">API</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Le bot lit jusqu'à 1 500 messages en remontant l'historique par paquets de 100 (pagination).</span>
+            <span class="txt-easy">Le robot relit jusqu'aux 1 500 derniers messages du salon Discord et récupère toutes les images et vidéos qu'il trouve.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Le script <code>recupere_medias.js</code> interroge l'API Discord v10 avec le token bot. La pagination évite la limite de 100 messages par requête. Les doublons sont filtrés par <code>attachment.id</code>.</span>
+              <span class="txt-easy">Discord ne donne pas plus de 100 messages à la fois, alors le robot en demande plusieurs "pages" les unes après les autres — comme feuilleter un livre. Il évite aussi de récupérer deux fois la même image.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Comparaison intelligente <span class="step-tag">DIFF</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Le workflow compare l'ancienne liste avec la nouvelle pour détecter ajouts, suppressions et jetons rafraîchis.</span>
+            <span class="txt-easy">Le robot compare la liste de photos actuelle avec celle qu'il avait la dernière fois, pour savoir ce qui a changé : nouvelles photos, photos supprimées, ou liens à mettre à jour.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Les médias sont identifiés par un <strong>ID stable</strong> extrait de l'URL (pas l'URL complète qui change). Cela permet de détecter les rafraîchissements de jetons Discord CDN sans les confondre avec de nouveaux médias.</span>
+              <span class="txt-easy">Chaque image a un numéro unique permanent. Discord change parfois l'adresse exacte d'une image pour des raisons de sécurité, mais le numéro reste le même — le robot fait donc la différence entre "nouvelle image" et "même image, lien mis à jour".</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Mise à jour du fichier de données <span class="step-tag">GIT</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Le fichier <code>donnees.json</code> est mis à jour sur GitHub. Si rien n'a changé, aucun commit n'est créé.</span>
+            <span class="txt-easy">Le robot met à jour la liste des photos sur GitHub. S'il n'y a rien de nouveau, il ne fait rien et ne laisse pas de trace inutile.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Le workflow vérifie avec <code>git diff --quiet</code> avant de committer. Cela évite de polluer l'historique Git avec des commits vides à chaque run horaire.</span>
+              <span class="txt-easy">Imagine un cahier où on note les changements. Si rien n'a bougé, on n'écrit rien — le cahier reste propre et lisible. Ici c'est pareil avec l'historique GitHub.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <div class="step-title">Redéploiement automatique du site <span class="step-tag">GITHUB PAGES</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Un nouveau commit déclenche GitHub Pages qui redéploie le site en quelques secondes.</span>
+            <span class="txt-easy">Dès qu'une photo est ajoutée à la liste, le site web se reconstruit automatiquement en quelques secondes pour l'afficher.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">Le frontend (<code>index.html</code> + <code>script.js</code>) lit <code>donnees.json</code> au chargement de la page et affiche dynamiquement tous les médias dans la grille cyberpunk.</span>
+              <span class="txt-easy">Quand tu ouvres le site, il lit automatiquement la liste des photos à jour et les affiche dans la grille. Pas besoin de recharger manuellement — ça se fait tout seul.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal" onclick="toggleStep(this)">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <div class="step-title">Notification Discord envoyée <span class="step-tag">WEBHOOK</span></div>
+          <div class="step-desc">
+            <span class="txt-dev">Un embed est posté dans le salon avec les stats de la synchronisation et un lien direct vers la galerie.</span>
+            <span class="txt-easy">Une fois que tout est fait, le robot envoie un message récapitulatif dans le salon Discord : combien de photos ajoutées, combien supprimées, et un lien vers le site.</span>
+          </div>
+          <div class="step-detail">
+            <div class="step-detail-inner">
+              <span class="txt-dev">L'embed contient : ajouts ➕, suppressions ➖, jetons rafraîchis 🔄, total 📊, lien galerie et lien rapport GitHub Actions. La date utilise les timestamps Discord natifs (<code>&lt;t:unix:F&gt;</code>) pour l'heure locale de chaque membre.</span>
+              <span class="txt-easy">Le message de résumé affiche le bilan de la mise à jour et un bouton pour aller voir la galerie directement. L'heure affichée s'adapte automatiquement au fuseau horaire de chaque membre du serveur.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="neon-divider"></div>
+
+  <!-- CONCEPTS -->
+  <section id="concepts">
+    <p class="section-label reveal">Terminologie</p>
+    <h2 class="reveal">Les <span>concepts clés</span></h2>
+    <p class="section-intro reveal">
+      <span class="txt-dev">Ce projet combine plusieurs technologies modernes. Voici leur rôle.</span>
+      <span class="txt-easy">Voici les outils utilisés dans ce projet, expliqués simplement.</span>
+    </p>
+
+    <div class="concepts-grid">
+      <div class="concept-card reveal">
+        <div class="concept-icon">⚡</div>
+        <div class="concept-name">CI/CD</div>
+        <div class="concept-desc">
+          <span class="txt-dev">Continuous Integration / Deployment. Le principe général derrière l'automatisation du pipeline complet.</span>
+          <span class="txt-easy">C'est l'idée de tout automatiser : quand quelque chose change, tout se met à jour tout seul, sans que tu aies à intervenir.</span>
+        </div>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🤖</div>
+        <div class="concept-name">GitHub Actions</div>
+        <div class="concept-desc">
+          <span class="txt-dev">L'outil qui exécute le workflow automatiquement sur des serveurs GitHub. Gratuit pour les repos publics.</span>
+          <span class="txt-easy">Un robot gratuit hébergé par GitHub qui peut exécuter des tâches automatiquement selon un planning ou un déclencheur.</span>
+        </div>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🌐</div>
+        <div class="concept-name">GitHub Pages</div>
+        <div class="concept-desc">
+          <span class="txt-dev">Hébergement web statique gratuit directement depuis un repo GitHub. Chaque push redéploie le site.</span>
+          <span class="txt-easy">Un hébergement de site web gratuit fourni par GitHub. Dès qu'on modifie les fichiers du projet, le site se met à jour automatiquement.</span>
+        </div>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🔀</div>
+        <div class="concept-name">GitOps</div>
+        <div class="concept-desc">
+          <span class="txt-dev">Git est la source de vérité centrale. Tout changement passe par un commit, ce qui déclenche le reste.</span>
+          <span class="txt-easy">Tout passe par GitHub : c'est la "mémoire centrale" du projet. Chaque modification enregistrée là-bas déclenche automatiquement la mise à jour du site.</span>
+        </div>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">📡</div>
+        <div class="concept-name">API Polling</div>
+        <div class="concept-desc">
+          <span class="txt-dev">Le bot interroge régulièrement l'API Discord pour récupérer les nouveaux messages à intervalle fixe.</span>
+          <span class="txt-easy">Le robot "demande" à Discord régulièrement : "est-ce qu'il y a du nouveau ?" — comme regarder ta boîte aux lettres toutes les heures.</span>
+        </div>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🔗</div>
+        <div class="concept-name">Webhook Discord</div>
+        <div class="concept-desc">
+          <span class="txt-dev">Une URL spéciale qui permet d'envoyer des messages dans un salon Discord depuis une application externe.</span>
+          <span class="txt-easy">Une adresse secrète qui permet à notre robot d'envoyer des messages dans le salon Discord, comme s'il était un membre du serveur.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="neon-divider"></div>
+
+  <!-- SECURITE -->
+  <section id="securite">
+    <p class="section-label reveal">Sécurité</p>
+    <h2 class="reveal">Conçu pour <span>rester privé</span></h2>
+    <p class="section-intro reveal">
+      <span class="txt-dev">Le salon source Discord reste privé. Seules les URLs CDN publiques des médias sont exposées.</span>
+      <span class="txt-easy">Ton salon Discord reste privé. Le site ne montre que les images — pas les messages, pas les membres, rien d'autre.</span>
+    </p>
+
+    <div class="security-list">
+      <div class="security-item reveal">
+        <span class="icon">🔒</span>
+        <div>
+          <strong>BOT EN LECTURE SEULE</strong>
+          <p>
+            <span class="txt-dev">Le bot Discord ne peut que lire les messages. Il n'a aucun droit d'écriture, de suppression ou de gestion du serveur.</span>
+            <span class="txt-easy">Le robot peut seulement regarder les messages — comme quelqu'un qui peut lire mais pas écrire. Il ne peut ni supprimer, ni modifier quoi que ce soit sur ton serveur.</span>
+          </p>
+        </div>
+      </div>
+      <div class="security-item reveal">
+        <span class="icon">🗝️</span>
+        <div>
+          <strong>GITHUB SECRETS</strong>
+          <p>
+            <span class="txt-dev">Le token bot, l'ID du salon et l'URL du webhook sont stockés dans les Secrets chiffrés de GitHub — jamais dans le code source.</span>
+            <span class="txt-easy">Les mots de passe et clés d'accès sont stockés dans un coffre-fort sécurisé sur GitHub — jamais écrits dans les fichiers du projet que tout le monde peut voir.</span>
+          </p>
+        </div>
+      </div>
+      <div class="security-item reveal">
+        <span class="icon">🛡️</span>
+        <div>
+          <strong>SALON SOURCE PRIVÉ</strong>
+          <p>
+            <span class="txt-dev">Le salon Discord reste privé. Seules les URLs publiques du CDN Discord sont référencées dans le fichier de données.</span>
+            <span class="txt-easy">Ton salon Discord reste entre membres. Le site affiche seulement les images, sans révéler qui les a postées ni le contenu des messages autour.</span>
+          </p>
+        </div>
+      </div>
+      <div class="security-item reveal">
+        <span class="icon">🔄</span>
+        <div>
+          <strong>JETONS CDN RAFRAÎCHIS</strong>
+          <p>
+            <span class="txt-dev">Discord fait expirer les URLs CDN pour des raisons de sécurité. Le pipeline détecte et met à jour ces jetons automatiquement.</span>
+            <span class="txt-easy">Discord change régulièrement les liens des images pour des raisons de sécurité. Notre système détecte ces changements et met les liens à jour automatiquement — les images ne disparaissent jamais du site.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="neon-divider"></div>
+
+  <!-- ACCÈS -->
+  <section id="acces">
+    <p class="section-label reveal">Accès</p>
+    <h2 class="reveal">Ouvrir la <span>galerie</span></h2>
+    <p class="section-intro reveal">Le site est public et accessible depuis n'importe quel navigateur, sans compte, sans login.</p>
+
+    <div class="terminal-block reveal">
+      <div class="terminal-bar">
+        <div class="t-dot" style="background:#ff5f57"></div>
+        <div class="t-dot" style="background:#febc2e"></div>
+        <div class="t-dot" style="background:#28c840"></div>
+        <span>gallery — navigateur</span>
+      </div>
+      <div class="terminal-body">
+        <p><span class="t-prompt">$</span> <span class="t-cmd">open</span> <a class="t-url" href="https://Nathan-Pro-FR.github.io/Discord_Github_Action/" target="_blank" rel="noopener">https://Nathan-Pro-FR.github.io/Discord_Github_Action/</a>
+          <button class="copy-url" onclick="copyUrl(this)">⎘ Copier</button>
+        </p>
+        <p class="t-out">✓ Galerie chargée — médias synchronisés depuis Discord</p>
+        <p class="t-dim"># Clique sur un média pour l'agrandir en plein écran</p>
+        <p class="t-dim"># La galerie se met à jour automatiquement toutes les heures</p>
+        <p class="t-dim"># Aucun compte requis · Aucun plugin · Fonctionne sur mobile</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>◈ CYBERPUNK DISCORD GALLERY &nbsp;·&nbsp; <a href="https://github.com/Nathan-Pro-FR" target="_blank" rel="noopener">github.com/Nathan-Pro-FR</a> &nbsp;·&nbsp; Propulsé par GitHub Actions + GitHub Pages</p>
+  </footer>
+
+  <script>
+    // Mode toggle
+    function toggleMode() {
+      const isEasy = document.body.classList.toggle('easy-mode');
+      const toast = document.getElementById('modeToast');
+      toast.textContent = isEasy
+        ? '🧠 Mode simplifié activé — bienvenue à tous !'
+        : '⚙️ Mode technique activé — retour aux termes exacts';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // Toggle pipeline steps
+    function toggleStep(el) {
+      const wasActive = el.classList.contains('active');
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      if (!wasActive) el.classList.add('active');
+    }
+
+    // Copy URL
+    function copyUrl(btn) {
+      navigator.clipboard.writeText('https://Nathan-Pro-FR.github.io/Discord_Github_Action/');
+      btn.textContent = '✓ Copié !';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '⎘ Copier'; btn.classList.remove('copied'); }, 2000);
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
